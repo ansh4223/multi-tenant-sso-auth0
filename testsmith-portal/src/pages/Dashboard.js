@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Container,
   Box,
@@ -19,7 +19,26 @@ import EmailIcon from '@mui/icons-material/Email';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 const Dashboard = () => {
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+
+  useEffect(() => {
+    const handleReturn = async () => {
+      const returnToApp = sessionStorage.getItem('returnToApp');
+      if (returnToApp && isAuthenticated) {
+        // Get token to pass back
+        try {
+          const token = await getAccessTokenSilently();
+          sessionStorage.removeItem('returnToApp');
+          // Redirect back to the calling app with token
+          window.location.href = `${returnToApp}?token=${token}`;
+        } catch (error) {
+          console.error('Error getting token:', error);
+        }
+      }
+    };
+
+    handleReturn();
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   if (!isAuthenticated) {
     return null;

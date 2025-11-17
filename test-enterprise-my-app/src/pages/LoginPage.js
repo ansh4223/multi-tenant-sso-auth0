@@ -12,11 +12,9 @@ const LoginPage = () => {
   }
 
   const handleTestSmithLogin = () => {
-    loginWithRedirect({
-      authorizationParams: {
-        connection: 'testsmith-sso',
-      },
-    });
+    // Redirect to testSmith Portal with return URL
+    const returnUrl = encodeURIComponent(window.location.origin);
+    window.location.href = `http://localhost:3000?returnTo=${returnUrl}`;
   };
 
   return (
